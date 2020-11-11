@@ -31,35 +31,91 @@ describe('app routes', () => {
       return client.end(done);
     });
 
-    test('returns todo', async () => {
+    test('returns Jon\'s todo list', async () => {
 
       const expectation = [
         {
-          'id': 1,
-          'name': 'bessie',
-          'coolfactor': 3,
-          'owner_id': 1
+          id: 4,
+          todo: 'make the bed',
+          completed: false,
+          owner_id: 2
         },
         {
-          'id': 2,
-          'name': 'jumpy',
-          'coolfactor': 4,
-          'owner_id': 1
+          id: 5,
+          todo: 'do laundry',
+          completed: false,
+          owner_id: 2
         },
         {
-          'id': 3,
-          'name': 'spot',
-          'coolfactor': 10,
-          'owner_id': 1
+          id: 6,
+          todo: 'wash the car',
+          completed: false,
+          owner_id: 2
         }
       ];
 
+      const expectation6 = [
+        {
+          id: 4,
+          todo: 'make the bed',
+          completed: false,
+          owner_id: 2
+        },
+        {
+          id: 5,
+          todo: 'do laundry',
+          completed: false,
+          owner_id: 2
+        },
+        {
+          id: 6,
+          todo: 'wash the car',
+          completed: true,
+          owner_id: 2
+        }
+      ];
+
+      await fakeRequest(app)
+        .post('/api/todo')
+        .send(expectation[0])
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      await fakeRequest(app)
+        .post('/api/todo')
+        .send(expectation[1])
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      await fakeRequest(app)
+        .post('/api/todo')
+        .send(expectation[2])
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
       const data = await fakeRequest(app)
-        .get('/todo')
+        .get('/api/todo')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      await fakeRequest(app)
+        .put('/api/todo/6')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const data6 = await fakeRequest(app)
+        .get('/api/todo')
+        .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
 
       expect(data.body).toEqual(expectation);
+      expect(data6.body).toEqual(expectation6);
     });
   });
 });
