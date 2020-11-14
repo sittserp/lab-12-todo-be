@@ -31,7 +31,7 @@ describe('app routes', () => {
       return client.end(done);
     });
 
-    test('returns Jon\'s todo list', async () => {
+    test('returns Jon\'s todo list POST and GET', async () => {
 
       const expectation = [
         {
@@ -50,27 +50,6 @@ describe('app routes', () => {
           id: 6,
           todo: 'wash the car',
           completed: false,
-          owner_id: 2
-        }
-      ];
-
-      const expectation6 = [
-        {
-          id: 4,
-          todo: 'make the bed',
-          completed: false,
-          owner_id: 2
-        },
-        {
-          id: 5,
-          todo: 'do laundry',
-          completed: false,
-          owner_id: 2
-        },
-        {
-          id: 6,
-          todo: 'wash the car',
-          completed: true,
           owner_id: 2
         }
       ];
@@ -102,6 +81,32 @@ describe('app routes', () => {
         .expect('Content-Type', /json/)
         .expect(200);
 
+      expect(data.body).toEqual(expectation);
+    });
+
+    test('returns Jon\'s updated todo list with PUT and GET', async () => {
+
+      const expectation6 = [
+        {
+          id: 4,
+          todo: 'make the bed',
+          completed: false,
+          owner_id: 2
+        },
+        {
+          id: 5,
+          todo: 'do laundry',
+          completed: false,
+          owner_id: 2
+        },
+        {
+          id: 6,
+          todo: 'wash the car',
+          completed: true,
+          owner_id: 2
+        }
+      ];
+
       await fakeRequest(app)
         .put('/api/todo/6')
         .set('Authorization', token)
@@ -114,7 +119,6 @@ describe('app routes', () => {
         .expect('Content-Type', /json/)
         .expect(200);
 
-      expect(data.body).toEqual(expectation);
       expect(data6.body).toEqual(expectation6);
     });
   });
